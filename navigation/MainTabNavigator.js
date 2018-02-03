@@ -2,7 +2,7 @@ import React from 'react';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import { Platform } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import DictScreen from '../screen/DictScreen';
+import DictScreen from '../screens/DictScreen';
 import Colors from '../constants/Colors';
 
 export default TabNavigator(
