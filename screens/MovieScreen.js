@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { ScrollView, Text, Image } from 'react-native';
-import { InputItem, List, Card, WingBlank } from 'antd-mobile';
+import { ScrollView } from 'react-native';
+import { InputItem, List } from 'antd-mobile';
 import { WebBrowser } from 'expo';
 
 const TMDB_API_KEY = 'cfe422613b250f702980a3bbf9e90716';
@@ -70,7 +70,6 @@ export default class MovieScreen extends Component {
                   >
                     {m.original_title}<Brief>{m.release_date}</Brief>
                     {m.overview}
-                    <Image source={{ uri: `${IMG_BASE}${m.backdrop_path}` }} />
                   </Item>
                 );
               })
