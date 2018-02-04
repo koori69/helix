@@ -2,13 +2,16 @@ import React from 'react';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import { Platform } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import DictScreen from '../screens/DictScreen';
+import { DictScreen, MovieScreen } from '../screens/';
 import Colors from '../constants/Colors';
 
 export default TabNavigator(
   {
     Dict: {
       screen: DictScreen,
+    },
+    Movie: {
+      screen: MovieScreen,
     },
   }, {
     navigationOptions: ({ navigation }) => ({
@@ -32,10 +35,13 @@ export default TabNavigator(
           case 'Dict':
             iconName = 'dictionary';
             break;
+          case 'Movie':
+            iconName = 'movie';
+            break;
           default:
             iconName = '';
         }
-        if (iconName === 'dictionary') {
+        if (iconName === 'dictionary' || iconName === 'movie') {
           return (
             <MaterialCommunityIcons
               name={iconName}

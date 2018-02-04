@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Platform } from 'react-native';
+import { View, Platform } from 'react-native';
 import { InputItem, Radio, List, WhiteSpace, Tag, Button } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,8 +7,8 @@ import { WebBrowser } from 'expo';
 
 const RadioItem = Radio.RadioItem;
 const data = [
-    { value: 0, label: '日中', extra: 'jc' },
-    { value: 1, label: '中日', extra: 'cj' },
+    { value: 0, label: '沪江小D-日中', extra: 'jc' },
+    { value: 1, label: '沪江小D-中日', extra: 'cj' },
 ];
 
 class Dict extends Component {
