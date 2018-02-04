@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Platform } from 'react-native';
-import { InputItem, Radio, List, WhiteSpace, Tag, Button } from 'antd-mobile';
+import { InputItem, Radio, List, WhiteSpace, Button } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import { Ionicons } from '@expo/vector-icons';
 import { WebBrowser } from 'expo';
@@ -21,12 +21,9 @@ class Dict extends Component {
     this.state = {
       selected: 0,
     };
-    // this.onChange = this.onChange.bind(this);
-    // this.onSearch = this.onSearch(this);
   }
 
   onChange(value) {
-    console.log(value);
     this.setState({ selected: value });
   }
 
@@ -35,7 +32,6 @@ class Dict extends Component {
     const lang = this.state.selected;
     const word = this.props.form.getFieldValue('word');
     const url = `${baseUrl}/${data[lang].extra}/${encodeURI(word)}`;
-    console.log(url);
     WebBrowser.openBrowserAsync(url);
   }
 
@@ -43,13 +39,12 @@ class Dict extends Component {
     const { getFieldProps } = this.props.form;
     return (
       <View>
-        <List>
-          <InputItem
-            {...getFieldProps('word')}
-            placeholder={'search word'}
-          >Word:
-          </InputItem>
-          <WhiteSpace />
+        <InputItem
+          {...getFieldProps('word')}
+          placeholder={'search word'}
+        />
+        <WhiteSpace />
+        <List renderHeader={() => 'Language'} className="my-list">
           {
                 data.map(i => (
                   <RadioItem
