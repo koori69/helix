@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import { View, Platform } from 'react-native';
-import { InputItem, Radio, List, WhiteSpace, Button } from 'antd-mobile';
-import { createForm } from 'rc-form';
+import { View, Platform, Keyboard, WebView } from 'react-native';
+import { InputItem, List, WhiteSpace, Button, SegmentedControl, WingBlank } from 'antd-mobile';
 import { Ionicons } from '@expo/vector-icons';
 import { WebBrowser } from 'expo';
 
-const RadioItem = Radio.RadioItem;
 const data = [
     { value: 0, label: '沪江小D-日中', extra: 'jc' },
     { value: 1, label: '沪江小D-中日', extra: 'cj' },
 ];
+const langArray = ['沪江小D-日中', '沪江小D-中日'];
 
-class Dict extends Component {
+export default class DictScreen extends Component {
   static navigationOptions = {
     title: 'Dict',
   };
@@ -19,51 +18,66 @@ class Dict extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: 0,
+      lang: 0,
+      url: '',
     };
   }
 
-  onChange(value) {
-    this.setState({ selected: value });
-  }
+  onWordChange = (word) => {
+    this.setState({ word });
+  };
+
+  onLanguageChange = (e) => {
+    Keyboard.dismiss();
+    this.setState({ lang: e.nativeEvent.selectedSegmentIndex });
+  };
 
   onSearch() {
+    Keyboard.dismiss();
     const baseUrl = 'https://dict.hjenglish.com/jp';
-    const lang = this.state.selected;
-    const word = this.props.form.getFieldValue('word');
+    const { word, lang } = this.state;
     const url = `${baseUrl}/${data[lang].extra}/${encodeURI(word)}`;
+    this.setState({ url });
     WebBrowser.openBrowserAsync(url);
   }
 
   render() {
-    const { getFieldProps } = this.props.form;
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <InputItem
-          {...getFieldProps('word')}
+          clear
+          onChange={this.onWordChange}
           placeholder={'search word'}
         />
-        <WhiteSpace />
         <List renderHeader={() => 'Language'} className="my-list">
-          {
-                data.map(i => (
-                  <RadioItem
-                    key={i.value}
-                    checked={this.state.selected === i.value}
-                    onChange={() => this.onChange(i.value)}
-                  >
-                    {i.label}
-                  </RadioItem>
-                ))
-            }
-          <Button type="primary" onClick={() => this.onSearch()}>
-              Search
-            <Ionicons name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'} size={26} />
-          </Button>
+          <WingBlank>
+            <WhiteSpace />
+            <SegmentedControl
+              selectedIndex={this.state.lang}
+              values={langArray}
+              onChange={this.onLanguageChange}
+            />
+            <WhiteSpace />
+          </WingBlank>
         </List>
+        <WhiteSpace />
+        <WingBlank>
+          <Button type="primary" onClick={() => this.onSearch()} >
+              Search
+              <Ionicons name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'} size={26} />
+          </Button>
+        </WingBlank>
+        <WhiteSpace />
+        <List renderHeader={() => 'Result'} className="my-list" />
+        <WhiteSpace />
+        {/* <WebView*/}
+        {/* source={{*/}
+        {/* uri: this.state.url,*/}
+        {/* }}*/}
+        {/* userAgent="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36"*/}
+        {/* />*/}
       </View>
     );
   }
 }
 
-export default createForm()(Dict);
