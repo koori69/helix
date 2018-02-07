@@ -22,6 +22,7 @@ const data = [
     { value: 2, label: 'Japanese', extra: 'ja', lid: 25 },
 ];
 const langArray = ['Chinese', 'English', 'Japanese'];
+const tvsource = ['ALL', 'TVDB', 'TMDB'];
 
 export default class TvScreen extends Component {
   static navigationOptions = {
@@ -38,6 +39,7 @@ export default class TvScreen extends Component {
       detailLang: 1,
       tvdb,
       loading: false,
+      dataSource: 0,
     };
   }
 
@@ -48,31 +50,9 @@ export default class TvScreen extends Component {
     }
   };
 
-  onSearch = async () => {
-    Keyboard.dismiss();
-    this.setState({ loading: true });
+  tmdbSearch = async (name, lang) => {
     const tvs = new Array();
-    const { lang, name, tvdb } = this.state;
-    if (name === '') {
-      return;
-    }
-
-    const tvdbSource = await tvdb.searchTv({ name }, data[lang].extra);
-    if (tvdbSource !== null) {
-      tvdbSource.forEach((t) => {
-        const item = {
-          original_name: t.seriesName,
-          first_air_date: t.firstAired,
-          id: t.id,
-          overview: t.overview,
-          image: `${TVDB_BANNER}${t.banner}`,
-          source: 'TVDB',
-        };
-        tvs.push(item);
-      });
-    }
-
-    const url = `${TMDB_TV_SEARCH}api_key=${TMDB_API_KEY}&query=${encodeURI(name)}&language=${data[lang].extra}`;
+    const url = `${TMDB_TV_SEARCH}api_key=${TMDB_API_KEY}&query=${encodeURI(name)}&language=${lang}`;
     await fetch(url, {
       method: 'GET',
       headers: {
@@ -95,13 +75,69 @@ export default class TvScreen extends Component {
     }).catch((err) => {
       console.error(err);
     });
+    return tvs;
+  };
 
+  onSearch = async () => {
+    Keyboard.dismiss();
+    this.setState({ loading: true });
+    let tvs = new Array();
+    const { lang, name, tvdb, dataSource } = this.state;
+    if (name === '') {
+      return;
+    }
+    let tvdbLists;
+    let tmdbLists;
+    console.log(dataSource);
+    switch (tvsource[dataSource]) {
+      case 'ALL':
+        tvdbLists = await this.tvdbSearch(tvdb, name, data[lang].extra);
+        tmdbLists = await this.tmdbSearch(name, data[lang].extra);
+        tvs = [...tvdbLists, ...tmdbLists];
+        break;
+      case 'TMDB':
+        tmdbLists = await this.tmdbSearch(name, data[lang].extra);
+        tvs = [...tmdbLists];
+        break;
+      case 'TVDB':
+        tvdbLists = await this.tvdbSearch(tvdb, name, data[lang].extra);
+        tvs = [...tvdbLists];
+        break;
+      default:
+        tvdbLists = await this.tvdbSearch(tvdb, name, data[lang].extra);
+        tmdbLists = this.tmdbSearch(name, data[lang].extra);
+        tvs = [...tvdbLists, ...tmdbLists];
+    }
     this.setState({ tvs, loading: false });
   };
 
   onLanguageChange = (e) => {
     Keyboard.dismiss();
     this.setState({ lang: e.nativeEvent.selectedSegmentIndex });
+  };
+
+  onDataSourceChange = (e) => {
+    Keyboard.dismiss();
+    this.setState({ dataSource: e.nativeEvent.selectedSegmentIndex });
+  };
+
+  tvdbSearch = async (tvdb, name, lang) => {
+    const tvs = new Array();
+    const tvdbSource = await tvdb.searchTv({ name }, lang);
+    if (tvdbSource !== null) {
+      tvdbSource.forEach((t) => {
+        const item = {
+          original_name: t.seriesName,
+          first_air_date: t.firstAired,
+          id: t.id,
+          overview: t.overview,
+          image: `${TVDB_BANNER}${t.banner}`,
+          source: 'TVDB',
+        };
+        tvs.push(item);
+      });
+    }
+    return tvs;
   };
 
   onDetailLanguageChange = (e) => {
@@ -130,6 +166,17 @@ export default class TvScreen extends Component {
           onChange={this.onNameChange}
           placeholder={'TV Name'}
         />
+        <List renderHeader={() => 'Data Source'} >
+          <WingBlank>
+            <WhiteSpace />
+            <SegmentedControl
+              selectedIndex={this.state.dataSource}
+              values={tvsource}
+              onChange={this.onDataSourceChange}
+            />
+            <WhiteSpace />
+          </WingBlank>
+        </List>
         <List renderHeader={() => 'Search Language'} >
           <WingBlank>
             <WhiteSpace />
