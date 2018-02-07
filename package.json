@@ -29,6 +29,8 @@
     "@expo/samples": "2.1.1",
     "antd-mobile": "^2.1.5",
     "expo": "^25.0.0",
+    "prop-types": "^15.6.0",
+    "query-string": "^5.1.0",
     "rc-form": "^2.1.7",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",

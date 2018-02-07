@@ -30,6 +30,7 @@ export default class MovieScreen extends Component {
       movies: [],
       lang: 0,
       name: '',
+      loading: false,
     };
   }
 
@@ -42,6 +43,7 @@ export default class MovieScreen extends Component {
 
   onSearch=() => {
     Keyboard.dismiss();
+    this.setState({ loading: true });
     const { lang, name } = this.state;
     if (name === '') {
       return;
@@ -55,7 +57,7 @@ export default class MovieScreen extends Component {
     }).then((response) => {
       response.json().then((json) => {
         const movies = json.results;
-        this.setState({ movies });
+        this.setState({ movies, loading: false });
       });
     }).catch((err) => {
       console.error(err);
@@ -76,7 +78,7 @@ export default class MovieScreen extends Component {
   render() {
     const { movies } = this.state;
     return (
-      <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always" >
         <InputItem
           clear
           onChange={this.onNameChange}
@@ -95,35 +97,33 @@ export default class MovieScreen extends Component {
         </List>
         <WhiteSpace />
         <WingBlank>
-          <Button type="primary" onClick={() => this.onSearch()}>
+          <Button type="primary" onClick={() => this.onSearch()} loading={this.state.loading}>
                   Search
                   <Ionicons name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'} size={26} />
           </Button>
         </WingBlank>
         <WhiteSpace />
 
-        <List renderHeader={() => 'Movies'} className="my-list">
-          <ScrollView>
-            {
-              movies.map((m) => {
-                return (
-                  <Item
-                    multipleLine
-                    wrap
-                    onClick={() => this.openMovie(m.id)}
-                    key={m.id}
-                    thumb={`${IMG_BASE}${m.backdrop_path}`}
-                  >
-                    {m.original_title}
-                    <Brief>{m.release_date}</Brief>
-                    <Text numberOfLines={4}>{m.overview}</Text>
-                  </Item>
-                );
-              })
+        <List renderHeader={() => 'Movies'} className="my-list" >
+          {
+            movies.map((m) => {
+              return (
+                <Item
+                  multipleLine
+                  wrap
+                  onClick={() => this.openMovie(m.id)}
+                  key={m.id}
+                  thumb={`${IMG_BASE}${m.backdrop_path}`}
+                >
+                  {m.original_title}
+                  <Brief>{m.release_date}</Brief>
+                  <Text numberOfLines={4}>{m.overview}</Text>
+                </Item>
+              );
+            })
             }
-          </ScrollView>
         </List>
-      </View>
+      </ScrollView>
     );
   }
 }

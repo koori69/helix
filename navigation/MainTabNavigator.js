@@ -1,11 +1,14 @@
 import React from 'react';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
-import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import { DictScreen, MovieScreen, TvScreen } from '../screens/';
+import { Ionicons, MaterialCommunityIcons, Feather, Entypo } from '@expo/vector-icons';
+import { DictScreen, MovieScreen, TvScreen, PomodoroScreen } from '../screens/';
 import Colors from '../constants/Colors';
 
 export default TabNavigator(
   {
+    Tomato: {
+      screen: PomodoroScreen,
+    },
     Dict: {
       screen: DictScreen,
     },
@@ -30,6 +33,9 @@ export default TabNavigator(
           case 'Tv':
             iconName = 'tv';
             break;
+          case 'Tomato':
+            iconName = 'back-in-time';
+            break;
           default:
             iconName = '';
         }
@@ -45,6 +51,15 @@ export default TabNavigator(
         } else if (iconName === 'tv') {
           return (
             <Feather
+              name={iconName}
+              size={28}
+              style={{ marginBottom: -3 }}
+              color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+            />
+          );
+        } else if (iconName === 'back-in-time') {
+          return (
+            <Entypo
               name={iconName}
               size={28}
               style={{ marginBottom: -3 }}
