@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import MainTabNavigator from './MainTabNavigator';
+import { TvResultScreen } from '../screens';
 
 const RootStackNavigator = StackNavigator(
   {
     Main: {
       screen: MainTabNavigator,
+    },
+    TvResult: {
+      screen: TvResultScreen,
     },
   }, {
     navigationOptions: () => ({
@@ -13,6 +17,9 @@ const RootStackNavigator = StackNavigator(
         fontWeight: 'normal',
       },
     }),
+  },
+  {
+    mode: 'card',
   },
 );
 

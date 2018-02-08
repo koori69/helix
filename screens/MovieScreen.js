@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Platform, Text, Keyboard } from 'react-native';
+import { ScrollView, Platform, Text, Keyboard } from 'react-native';
 import { InputItem, List, WhiteSpace, Button, SegmentedControl, WingBlank } from 'antd-mobile';
-import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
-
-const TMDB_API_KEY = 'cfe422613b250f702980a3bbf9e90716';
-const QUERY_URL = 'https://api.themoviedb.org/3/search/movie?';
-const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
-const MOVIE_BASE = 'https://www.themoviedb.org/movie';
+import TMDBClient from '../utils/tmdb';
 
 const Item = List.Item;
 const Brief = Item.Brief;
@@ -26,11 +21,13 @@ export default class MovieScreen extends Component {
 
   constructor(props) {
     super(props);
+    const tmdb = new TMDBClient();
     this.state = {
       movies: [],
       lang: 0,
       name: '',
       loading: false,
+      tmdb,
     };
   }
 
@@ -44,24 +41,11 @@ export default class MovieScreen extends Component {
   onSearch=() => {
     Keyboard.dismiss();
     this.setState({ loading: true });
-    const { lang, name } = this.state;
+    const { lang, name, tmdb } = this.state;
     if (name === '') {
       return;
     }
-    const url = `${QUERY_URL}query=${encodeURI(name)}&api_key=${TMDB_API_KEY}&language=${data[lang].extra}`;
-    fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((response) => {
-      response.json().then((json) => {
-        const movies = json.results;
-        this.setState({ movies, loading: false });
-      });
-    }).catch((err) => {
-      console.error(err);
-    });
+    tmdb.movieSearch({ name, lang: data[lang].extra });
   };
 
   onLanguageChange = (e) => {
@@ -71,8 +55,8 @@ export default class MovieScreen extends Component {
 
   openMovie = (id) => {
     Keyboard.dismiss();
-    const { lang } = this.state;
-    WebBrowser.openBrowserAsync(`${MOVIE_BASE}/${id}?language=${data[lang].extra}`);
+    const { lang, tmdb } = this.state;
+    tmdb.openMovie({ id, lang: data[lang].extra });
   };
 
   render() {
