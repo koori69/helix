@@ -16,7 +16,7 @@ export default class TvResultScreen extends Component {
     if (source === 'TMDB') {
       tmdb.openTv({ id, lang });
     } else {
-      tvdb.open({ id, lang: detailLang });
+      tvdb.open({ id, lid: detailLang });
     }
   };
 
