@@ -4,6 +4,7 @@ import { InputItem, List, WhiteSpace, Button, SegmentedControl, WingBlank } from
 import { Ionicons } from '@expo/vector-icons';
 import TMDBClient from '../utils/tmdb';
 
+const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w500';
 const Item = List.Item;
 const Brief = Item.Brief;
 
@@ -38,14 +39,15 @@ export default class MovieScreen extends Component {
     }
   };
 
-  onSearch=() => {
+  onSearch= async () => {
     Keyboard.dismiss();
     this.setState({ loading: true });
     const { lang, name, tmdb } = this.state;
     if (name === '') {
       return;
     }
-    tmdb.movieSearch({ name, lang: data[lang].extra });
+    const movies = await tmdb.movieSearch({ name, lang: data[lang].extra });
+    this.setState({ movies, loading: false });
   };
 
   onLanguageChange = (e) => {
@@ -97,7 +99,7 @@ export default class MovieScreen extends Component {
                   wrap
                   onClick={() => this.openMovie(m.id)}
                   key={m.id}
-                  thumb={`${IMG_BASE}${m.backdrop_path}`}
+                  thumb={`${TMDB_IMG_BASE}${m.backdrop_path}`}
                 >
                   {m.original_title}
                   <Brief>{m.release_date}</Brief>
