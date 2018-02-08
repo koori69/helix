@@ -97,6 +97,7 @@ export default class TvScreen extends Component {
     return (
       <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
         <InputItem
+          clear
           onChange={this.onNameChange}
           placeholder={'TV Name'}
         />

@@ -64,7 +64,7 @@ export default class MovieScreen extends Component {
   render() {
     const { movies } = this.state;
     return (
-      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always" >
+      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled" >
         <InputItem
           clear
           onChange={this.onNameChange}
