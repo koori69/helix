@@ -4,4 +4,4 @@ import TvScreen from './TvScreen';
 import PomodoroScreen from './PomodoroScreen';
 import TvResultScreen from './TvResultScreen';
 
-export { DictScreen, MovieScreen, TvScreen, PomodoroScreen,TvResultScreen };
+export { DictScreen, MovieScreen, TvScreen, PomodoroScreen, TvResultScreen };

@@ -129,7 +129,6 @@ export default class PomodoroScreen extends Component {
   }
 
   onPickerOk = async (value) => {
-    console.log(value);
     this.setState({ countdownTime: value });
   };
 
@@ -158,7 +157,6 @@ export default class PomodoroScreen extends Component {
   };
 
   focusStart= async () => {
-    console.log('focus start');
     const { countdownTime } = this.state;
     const startTime = new Date().getTime();
     const endTime = startTime + ((parseInt(countdownTime[0]) * 60 + parseInt(countdownTime[1])) * 1000);
@@ -183,14 +181,12 @@ export default class PomodoroScreen extends Component {
   };
 
   stop=() => {
-    console.log('focus stop');
     const { notify, timer } = this.state;
     Notifications.cancelScheduledNotificationAsync(notify);
     clearInterval(timer);
   };
 
   breakStart= async () => {
-    console.log('break start');
     const { countdownTime } = this.state;
     const startTime = new Date().getTime();
     const endTime = startTime + ((parseInt(countdownTime[0]) * 60 + parseInt(countdownTime[1])) * 1000);
@@ -214,30 +210,95 @@ export default class PomodoroScreen extends Component {
     this.setState({ endTime, notify, timer });
   };
 
-  handleBtnClick = () => {
+  handleContinueClick = () => {
     const { status } = this.state;
-    console.log(status);
     switch (status) {
       case POMODORO_STATUS.READY:
-        this.setState({ status: POMODORO_STATUS.FOCUS, btnText: STOP, pickerDisabled: true });
+        this.setState({ status: POMODORO_STATUS.FOCUS, pickerDisabled: true });
         this.focusStart();
         break;
       case POMODORO_STATUS.FOCUS:
-        this.setState({ status: POMODORO_STATUS.FOCUS_STOP, btnText: START, pickerDisabled: false });
+        this.setState({ status: POMODORO_STATUS.FOCUS_STOP, pickerDisabled: false });
         this.stop();
         break;
       case POMODORO_STATUS.FOCUS_STOP:
-        this.setState({ status: POMODORO_STATUS.FOCUS, btnText: STOP, pickerDisabled: true });
+        this.setState({ status: POMODORO_STATUS.FOCUS, pickerDisabled: true });
         this.focusStart();
         break;
       case POMODORO_STATUS.BREAK_READY:
-        this.setState({ status: POMODORO_STATUS.BREAK, btnText: STOP, pickerDisabled: true });
+        this.setState({ status: POMODORO_STATUS.BREAK, pickerDisabled: true });
         this.breakStart();
         break;
       case POMODORO_STATUS.BREAK:
-        this.setState({ status: POMODORO_STATUS.BREAK_STOP, btnText: START, pickerDisabled: false });
+        this.setState({ status: POMODORO_STATUS.BREAK_STOP, pickerDisabled: false });
         this.stop();
         break;
+      default:
+    }
+  };
+
+  resetTime = () => {
+    this.setState({ countdownTime: ['10', '00'] });
+  };
+
+  handleResetClick = () => {
+    const { status } = this.state;
+    switch (status) {
+      case POMODORO_STATUS.FOCUS_STOP:
+        this.setState({ status: POMODORO_STATUS.READY, pickerDisabled: true });
+        this.resetTime();
+        break;
+      case POMODORO_STATUS.BREAK_STOP:
+        this.setState({ status: POMODORO_STATUS.READY, pickerDisabled: true });
+        this.resetTime();
+        break;
+      default:
+    }
+  };
+
+  displayButton=() => {
+    const { status } = this.state;
+    switch (status) {
+      case POMODORO_STATUS.READY:
+        return (
+          <WingBlank>
+            <Button type="primary" onClick={this.handleContinueClick}>Start</Button>
+          </WingBlank>
+        );
+      case POMODORO_STATUS.FOCUS:
+        return (
+          <WingBlank>
+            <Button type="primary" onClick={this.handleContinueClick}>Stop</Button>
+          </WingBlank>
+        );
+      case POMODORO_STATUS.FOCUS_STOP:
+        return (
+          <WingBlank>
+            <Button type="primary" onClick={this.handleContinueClick}>Continue</Button>
+            <WhiteSpace />
+            <Button type="primary" onClick={this.handleResetClick}>Reset</Button>
+          </WingBlank>
+        );
+      case POMODORO_STATUS.BREAK_READY:
+        return (
+          <WingBlank>
+            <Button type="primary" onClick={this.handleContinueClick}>Start</Button>
+          </WingBlank>
+        );
+      case POMODORO_STATUS.BREAK:
+        return (
+          <WingBlank>
+            <Button type="primary" onClick={this.handleContinueClick}>Stop</Button>
+          </WingBlank>
+        );
+      case POMODORO_STATUS.BREAK_STOP:
+        return (
+          <WingBlank>
+            <Button type="primary" onClick={this.handleContinueClick}>Continue</Button>
+            <WhiteSpace />
+            <Button type="primary" onClick={this.handleResetClick}>Reset</Button>
+          </WingBlank>
+        );
       default:
     }
   };
@@ -263,9 +324,7 @@ export default class PomodoroScreen extends Component {
           <Circle text={`${this.state.countdownTime[0]}:${this.state.countdownTime[1]}`} />
         </Picker>
         <WhiteSpace />
-        <WingBlank>
-          <Button type="primary" onClick={this.handleBtnClick}>{this.state.btnText}</Button>
-        </WingBlank>
+        {this.displayButton()}
       </View>
     );
   }
