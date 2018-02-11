@@ -142,12 +142,13 @@ export default class PomodoroScreen extends Component {
   }
 
   count=() => {
-    const { endTime } = this.state;
+    const { endTime, status } = this.state;
     const now = new Date().getTime();
     const ms = endTime - now;
     if (ms <= 0) {
+      const statusTxt = status === POMODORO_STATUS.FOCUS ? POMODORO_STATUS.BREAK_READY : POMODORO_STATUS.READY;
       clearInterval(this.state.timer);
-      this.setState({ status: POMODORO_STATUS.BREAK_READY, countdownTime: ['00', '10'], btnText: START, pickerDisabled: false });
+      this.setState({ status: statusTxt, countdownTime: ['00', '10'], btnText: START, pickerDisabled: false });
       return;
     }
     const minutesRemaining = Math.floor(ms / 1000 / 60);
