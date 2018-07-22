@@ -84,6 +84,7 @@ export default class TVDBClient {
           overview: t.overview,
           image: `${TVDB_BANNER}${t.banner}`,
           source: 'TVDB',
+          slug: t.slug,
         };
         tvs.push(item);
       });
@@ -91,9 +92,10 @@ export default class TVDBClient {
     return tvs;
   }
 
-  open({ id, lid }) {
-    const param = { tab: 'series', id, lid };
-    const url = `${TVDB_BASE}?${queryString.stringify(param)}`;
+  open({ name }) {
+    console.log(name);
+    // const param = { tab: 'series', id, lid };
+    const url = `${TVDB_BASE}series/${name}`;
     WebBrowser.openBrowserAsync(url);
   }
 }

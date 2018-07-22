@@ -11,12 +11,12 @@ export default class TvResultScreen extends Component {
     tabBarVisible: false,
   };
 
-  openMovie = (id, source) => {
-    const { lang, detailLang, tvdb, tmdb } = this.props.navigation.state.params;
+  openMovie = (id, source, name) => {
+    const { lang, tvdb, tmdb } = this.props.navigation.state.params;
     if (source === 'TMDB') {
       tmdb.openTv({ id, lang });
     } else {
-      tvdb.open({ id, lid: detailLang });
+      tvdb.open({ name });
     }
   };
 
@@ -31,7 +31,7 @@ export default class TvResultScreen extends Component {
                 <Item
                   arrow="empty"
                   multipleLine
-                  onClick={() => this.openMovie(m.id, m.source)}
+                  onClick={() => this.openMovie(m.id, m.source, m.slug)}
                   key={m.id}
                   thumb={m.image}
                 >
@@ -43,6 +43,9 @@ export default class TvResultScreen extends Component {
                       {m.source}
                     </Text>
                   </View>
+                  <Brief>
+                    <Text>{m.slug}</Text>
+                  </Brief>
                   <Brief>
                     <Text>{m.first_air_date}</Text>
                   </Brief>

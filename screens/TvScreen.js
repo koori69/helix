@@ -53,7 +53,7 @@ export default class TvScreen extends Component {
     let tmdbLists;
     switch (tvsource[dataSource]) {
       case 'ALL':
-        tvdbLists = await tvdb.search({ name, lang: data[lang].extra });
+        tvdbLists = await tvdb.search({ name, lang: data[detailLang].extra });
         tmdbLists = await tmdb.tvSearch({ name, lang: data[lang].extra });
         tvs = [...tvdbLists, ...tmdbLists];
         break;
@@ -62,11 +62,11 @@ export default class TvScreen extends Component {
         tvs = [...tmdbLists];
         break;
       case 'TVDB':
-        tvdbLists = await tvdb.search({ name, lang: data[lang].extra });
+        tvdbLists = await tvdb.search({ name, lang: data[detailLang].extra });
         tvs = [...tvdbLists];
         break;
       default:
-        tvdbLists = await tvdb.search({ name, lang: data[lang].extra });
+        tvdbLists = await tvdb.search({ name, lang: data[detailLang].extra });
         tmdbLists = await tmdb.tvSearch({ name, lang: data[lang].extra });
         tvs = [...tvdbLists, ...tmdbLists];
     }
@@ -112,7 +112,7 @@ export default class TvScreen extends Component {
             <WhiteSpace />
           </WingBlank>
         </List>
-        <List renderHeader={() => 'Search Language'} >
+        <List renderHeader={() => 'TMDB Language'} >
           <WingBlank>
             <WhiteSpace />
             <SegmentedControl
@@ -123,7 +123,7 @@ export default class TvScreen extends Component {
             <WhiteSpace />
           </WingBlank>
         </List>
-        <List renderHeader={() => 'Detail Language'} >
+        <List renderHeader={() => 'TVDB Language'} >
           <WingBlank>
             <WhiteSpace />
             <SegmentedControl
